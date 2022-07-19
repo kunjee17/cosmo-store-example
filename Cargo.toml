@@ -1,0 +1,17 @@
+[package]
+name = "cosmo_store_example"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+uuid = { version = "1", features = ["v4"]}
+anyhow="1"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sqlx = { version = "0", features = [ "runtime-tokio-rustls", "sqlite", "uuid", "chrono", "json" ] }
+cosmo_store = { git = "https://github.com/kunjee17/cosmo-store-rs" }
+cosmo_store_util = { git = "https://github.com/kunjee17/cosmo-store-rs" }
+cosmo_store_sqlx_sqlite = { git = "https://github.com/kunjee17/cosmo-store-rs" }
