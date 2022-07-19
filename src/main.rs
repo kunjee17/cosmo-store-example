@@ -1,5 +1,6 @@
 mod index_aggregate;
 use anyhow::Result;
+use tokio::fs::{File, OpenOptions};
 use cosmo_store::common::i64_event_version::EventVersion;
 use cosmo_store::traits::event_store::EventStore;
 use cosmo_store::types::event_read::EventRead;
@@ -19,8 +20,13 @@ struct Meta {}
 
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Create database file
+    let _ = OpenOptions::new().create(true).append(true).open("sample.db").await?;
+
+    // Create database pool
+    let pool = SqlitePoolOptions::new().connect("sqlite:sample.db").await?;
     const INDEX_AGGREGATE : IndexAggregate  = IndexAggregate::init();
-    let pool = SqlitePoolOptions::new().connect("sqlite::memory:").await?;
+
     let store = EventStoreSQLXSqlite::new(&pool, "index").await?;
     let stream_id = Uuid::new_v4().as_simple().to_string();
     let _ = make_handler(&INDEX_AGGREGATE, &store, &Command::AddOrg, &stream_id, &EventsReadRange::AllEvents, &ExpectedVersion::Any).await?;
